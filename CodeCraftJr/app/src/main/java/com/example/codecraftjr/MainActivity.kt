@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
@@ -68,9 +69,21 @@ fun Greeting(modifier: Modifier = Modifier) {
             }
         }
     }
-    //Bottom nav bar
-
+    //Bottom code bar
+    Row(horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Bottom,
+        modifier = Modifier.fillMaxSize())
+        {
+            for (i in 1..8) {
+                Image(
+                    painter = painterResource(id = R.drawable.stone),
+                    contentDescription = "stone",
+                    modifier = Modifier.size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
+                )
+            }
+    }
 }
+
 @Composable
 fun calcBlockSize(): Int {
     val width = LocalConfiguration.current.screenWidthDp
