@@ -15,6 +15,7 @@ import com.example.codecraftjr.ui.theme.CodeCraftJrTheme
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -44,8 +45,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
+    //Background
+    Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
+    Image(
+        painter = painterResource(R.drawable.background),
+        contentDescription = "background",
+        modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+    )
+
     //Game board
-    Row() {
+    Row(horizontalArrangement = Arrangement.Center,
+    modifier = Modifier.fillMaxSize()) {
         for (i in 1..8) {
             Column() {
                 for (j in 1..6) {
@@ -59,6 +69,7 @@ fun Greeting(modifier: Modifier = Modifier) {
         }
     }
     //Bottom nav bar
+
 }
 @Composable
 fun calcBlockSize(): Int {
