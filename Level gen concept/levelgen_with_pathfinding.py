@@ -1,6 +1,5 @@
 from random import *
 
-
 def method_one():
     success = False
     while not success:
@@ -66,9 +65,8 @@ def method_one():
 
         to_move = 'right'
         hit_wall = False
+        
         #keep moving until hit wall or finish level
-        success = False
-
         runs = 0
         while x<width-1 and runs<100:
             runs += 1
@@ -153,12 +151,13 @@ def method_one():
                     success = False
                     print("err: no exit")
 
-
+        #clear excess generated level
         for i in range(height):
             for j in range(width):
                 if level[i][j]==1:
                     level[i][j]=0
-
+                    
+        #replace 2s (path found) with 1s
         for i in range(height):
             for j in range(width):
                 if level[i][j]==2:
@@ -167,5 +166,4 @@ def method_one():
 
     print('pathfound:',level)
 
-for i in range(100000):
-    method_one()
+method_one()
