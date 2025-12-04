@@ -4,5 +4,5 @@
 ### Bonus Features:
 1. Scalable to phone and tablet
 2. Level generator
-3. 
+3. Hard mode (more complex levels)
 4. 
