@@ -30,6 +30,7 @@ import com.example.codecraftjr.ui.theme.CodeCraftJrTheme
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draganddrop.DragAndDropEvent
@@ -67,6 +68,7 @@ fun Greeting(modifier: Modifier = Modifier) {
         mutableStateListOf(0,0,0,0,0,0,0,0),
         mutableStateListOf(0,0,0,0,0,0,0,0),
     )}
+    val stevePos = remember {mutableStateListOf(0,1)} //(x,y).must compute this later with randgen levels
     //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
@@ -84,11 +86,19 @@ fun Greeting(modifier: Modifier = Modifier) {
                     when (level[j][i]) {
                         1 -> blockId = R.drawable.stone
                     }
-                    Image(
-                        painter = painterResource(id = blockId),
-                        contentDescription = "dirt",
-                        modifier = Modifier.size(calcBlockSize().dp).border(0.5.dp, color = Color.Gray)
-                    )
+                    Box(modifier = Modifier.size(calcBlockSize().dp)) {
+                        Image(
+                            painter = painterResource(id = blockId),
+                            contentDescription = "block",
+                            modifier = Modifier.border(0.5.dp, color = Color.Gray)
+                        )
+                        if (stevePos[0]==i && stevePos[1]==j) {
+                            Image(
+                                painter = painterResource(id = R.drawable.steve_walk),
+                                contentDescription = "steve",
+                            )
+                        }
+                    }
                 }
             }
         }
