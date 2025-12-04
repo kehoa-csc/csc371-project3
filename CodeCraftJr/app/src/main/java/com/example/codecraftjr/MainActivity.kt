@@ -59,6 +59,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
     val codebar = remember { mutableStateListOf<String>() }
+    val level = remember { mutableStateListOf(
+        mutableStateListOf(0,0,0,0,0,0,0,0),
+        mutableStateListOf(1,1,1,0,0,0,0,0),
+        mutableStateListOf(0,0,1,0,0,0,0,0),
+        mutableStateListOf(0,0,1,1,1,1,1,1),
+        mutableStateListOf(0,0,0,0,0,0,0,0),
+        mutableStateListOf(0,0,0,0,0,0,0,0),
+    )}
     //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
@@ -69,11 +77,15 @@ fun Greeting(modifier: Modifier = Modifier) {
     //Game board
     Row(horizontalArrangement = Arrangement.Center,
     modifier = Modifier.fillMaxSize()) {
-        repeat(8) {
+        for (i in (0..7)) {
             Column() {
-                repeat(6) {
+                for (j in 0..5) {
+                    var blockId: Int = R.drawable.dirt
+                    when (level[j][i]) {
+                        1 -> blockId = R.drawable.stone
+                    }
                     Image(
-                        painter = painterResource(id = R.drawable.dirt),
+                        painter = painterResource(id = blockId),
                         contentDescription = "dirt",
                         modifier = Modifier.size(calcBlockSize().dp).border(0.5.dp, color = Color.Gray)
                     )
