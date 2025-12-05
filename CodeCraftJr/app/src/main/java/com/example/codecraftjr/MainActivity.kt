@@ -11,7 +11,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +29,10 @@ import com.example.codecraftjr.ui.theme.CodeCraftJrTheme
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draganddrop.DragAndDropEvent
@@ -38,6 +40,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
+import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,19 +49,45 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CodeCraftJrTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                Game()
             }
         }
     }
 }
 
+@Composable
+fun MainMenu() {
+    //Background
+    Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
+    Image(
+        painter = painterResource(R.drawable.background),
+        contentDescription = "background",
+        modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
+        //Text(text="CodeCraft Jr.", fontSize = 48.sp)
+        Image(
+            painter = painterResource(R.drawable.title),
+            contentDescription = "title logo",
+            modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp/2,LocalConfiguration.current.screenHeightDp.dp/3)
+        )
+        Row(modifier = Modifier.padding(0.dp)) {
+            Button(content = {Text("Parents", fontSize = 36.sp)},modifier = Modifier.padding(20.dp,0.dp),
+                onClick = {
+
+                })
+            Button(content = {Text("  Kids  ", fontSize = 36.sp)}, modifier = Modifier.padding(20.dp,0.dp),
+                onClick = {
+
+                })
+        }
+    }
+}
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
+fun Game(modifier: Modifier = Modifier) {
     val codebar = remember { mutableStateListOf<String>() }
     val level = remember { mutableStateListOf(
         mutableStateListOf(0,0,0,0,0,0,0,0),
@@ -171,8 +200,8 @@ fun calcBlockSize(): Int {
 
 @Preview(showBackground = true, device="spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
-fun GreetingPreview() {
+fun Preview() {
     CodeCraftJrTheme {
-        Greeting()
+        MainMenu()
     }
 }
