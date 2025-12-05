@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -31,10 +30,12 @@ import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
@@ -84,6 +85,50 @@ fun MainMenu() {
     }
 }
 
+@Composable
+fun KidsProfiles() {
+    //Background
+    Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
+    Image(
+        painter = painterResource(R.drawable.background),
+        contentDescription = "background",
+        modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,32.dp)) {
+        Text("Hi! Pick a profile.", fontSize = 36.sp)
+        Button(content = {Text("Andrew", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,32.dp).width(LocalConfiguration.current.screenWidthDp.dp/3),
+            onClick = {
+
+            })
+        //More profiles loaded from file will go here
+        //Call KidMenu with profile name in function header
+    }
+}
+
+@Composable
+fun KidMenu(name: String) {
+    Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
+    Image(
+        painter = painterResource(R.drawable.background),
+        contentDescription = "background",
+        modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,32.dp)) {
+        Text("Hi, ${name}! Pick a level.", fontSize = 36.sp)
+        Button(content = {Text("Overworld", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
+            onClick = {
+
+            })
+        Button(content = {Text("Caves", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
+            onClick = {
+
+            })
+        Button(content = {Text("Random level!", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
+            onClick = {
+
+            })
+    }
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -202,6 +247,6 @@ fun calcBlockSize(): Int {
 @Composable
 fun Preview() {
     CodeCraftJrTheme {
-        MainMenu()
+        KidMenu("test")
     }
 }
