@@ -31,10 +31,15 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
@@ -50,11 +55,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CodeCraftJrTheme {
-                Game()
+                MainMenu()
             }
         }
     }
-}
+
 
 @Composable
 fun MainMenu() {
@@ -75,14 +80,69 @@ fun MainMenu() {
         Row(modifier = Modifier.padding(0.dp)) {
             Button(content = {Text("Parents", fontSize = 36.sp)},modifier = Modifier.padding(20.dp,0.dp),
                 onClick = {
-
+                    setContent{
+                        CodeCraftJrTheme {
+                            AdultLoginRegister()
+                        }
+                    }
                 })
             Button(content = {Text("  Kids  ", fontSize = 36.sp)}, modifier = Modifier.padding(20.dp,0.dp),
                 onClick = {
-
+                    setContent{
+                        CodeCraftJrTheme {
+                            KidsProfiles()
+                        }
+                    }
                 })
         }
     }
+}
+
+@Composable
+fun AdultLoginRegister() {
+    //Background
+    var firstname by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
+    Image(
+        painter = painterResource(R.drawable.background),
+        contentDescription = "background",
+        modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,24.dp)) {
+        Text(text="Adult Portal", fontSize = 48.sp)
+        TextField(
+            value = firstname,
+            onValueChange = { firstname = it },
+            label = { Text("First Name") },
+            modifier = Modifier.padding(0.dp,16.dp)
+        )
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
+            modifier = Modifier.padding(0.dp,16.dp),
+        )
+        Row(modifier = Modifier.padding(0.dp)) {
+            Button(content = {Text("Register", fontSize = 24.sp)},modifier = Modifier.padding(20.dp,24.dp),
+                onClick = {
+
+                })
+            Button(content = {Text("  Log in  ", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
+                onClick = {
+                    setContent{
+                        CodeCraftJrTheme {
+
+                        }
+                    }
+                })
+        }
+    }
+}
+
+@Composable
+fun AdultPortal() {
+
 }
 
 @Composable
@@ -98,7 +158,7 @@ fun KidsProfiles() {
         Text("Hi! Pick a profile.", fontSize = 36.sp)
         Button(content = {Text("Andrew", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,32.dp).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-
+                setContent { KidMenu("test") }
             })
         //More profiles loaded from file will go here
         //Call KidMenu with profile name in function header
@@ -117,7 +177,7 @@ fun KidMenu(name: String) {
         Text("Hi, ${name}! Pick a level.", fontSize = 36.sp)
         Button(content = {Text("Overworld", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-
+                setContent { Game() }
             })
         Button(content = {Text("Caves", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
@@ -247,6 +307,8 @@ fun calcBlockSize(): Int {
 @Composable
 fun Preview() {
     CodeCraftJrTheme {
-        KidMenu("test")
+        //KidMenu("test")
+        AdultLoginRegister()
     }
+}
 }
