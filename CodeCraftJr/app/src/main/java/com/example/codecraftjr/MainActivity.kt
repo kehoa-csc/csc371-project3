@@ -37,6 +37,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
@@ -62,7 +64,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CodeCraftJrTheme {
-                MainMenu()
+                Game(levelChoice="caveLevel")
             }
         }
     }
@@ -200,11 +202,11 @@ fun KidMenu(name: String) {
         Text("Hi, ${name}! Pick a level.", fontSize = 36.sp)
         Button(content = {Text("Overworld", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-                setContent { Game() }
+                setContent { Game(levelChoice="overLevel") }
             })
         Button(content = {Text("Caves", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-
+                setContent { Game(levelChoice="caveLevel") }
             })
         Button(content = {Text("Random level!", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
@@ -215,9 +217,10 @@ fun KidMenu(name: String) {
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Game(modifier: Modifier = Modifier) {
+fun Game(modifier: Modifier = Modifier,levelChoice: String) {
     val codebar = remember { mutableStateListOf<String>() }
-    val level = remember { mutableStateListOf(
+
+    val overLevel = remember { mutableStateListOf(
         mutableStateListOf(0,0,0,0,0,0,0,0),
         mutableStateListOf(1,1,1,0,0,0,0,0),
         mutableStateListOf(0,0,1,0,0,0,0,0),
@@ -225,15 +228,41 @@ fun Game(modifier: Modifier = Modifier) {
         mutableStateListOf(0,0,0,0,0,0,0,0),
         mutableStateListOf(0,0,0,0,0,0,0,0),
     )}
-    val steveStart = remember {listOf(0,1)} //(x,y).must compute this later with randgen levels
+    val caveLevel = remember { mutableStateListOf(
+        mutableStateListOf(0,1,1,1,1,0,0,0),
+        mutableStateListOf(0,1,0,0,1,0,0,0),
+        mutableStateListOf(0,1,0,1,1,0,0,0),
+        mutableStateListOf(1,1,0,1,0,0,1,1),
+        mutableStateListOf(0,0,0,1,1,1,1,0),
+        mutableStateListOf(0,0,0,0,0,0,0,0),
+    )}
+    var level = overLevel
+    if (levelChoice=="caveLevel") {
+        level = caveLevel
+    }
+    val steveStart = remember {mutableListOf(0,0)} //(x,y)
+    for(i in 0..5) {
+        if (level[i][0] == 1) {steveStart[1]=i}
+    }
     val stevePos = remember {mutableStateListOf(steveStart[0],steveStart[1])}
     //Background
-    Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
-    Image(
-        painter = painterResource(R.drawable.background),
-        contentDescription = "background",
-        modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
-    )
+    if (levelChoice=="caveLevel") {
+        Scaffold(containerColor = Color.hsl(0F, 0F,.165F)) { }
+        Image(
+            painter = painterResource(R.drawable.backgroundcave),
+            contentDescription = "background",
+            modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+        )
+    } else {
+        Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
+        Image(
+            painter = painterResource(R.drawable.background),
+            contentDescription = "background",
+            modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+        )
+    }
+
+
     //Game board
     Row(horizontalArrangement = Arrangement.Center,
     modifier = Modifier.fillMaxSize()) {
@@ -241,8 +270,15 @@ fun Game(modifier: Modifier = Modifier) {
             Column() {
                 for (j in 0..5) {
                     var blockId: Int = R.drawable.dirt
-                    when (level[j][i]) {
-                        1 -> blockId = R.drawable.stone
+                    if (levelChoice=="caveLevel") {
+                        blockId = R.drawable.stone
+                        when (level[j][i]) {
+                            1 -> blockId = R.drawable.stone_dark
+                        }
+                    } else {
+                        when (level[j][i]) {
+                            1 -> blockId = R.drawable.stone
+                        }
                     }
                     Box(modifier = Modifier.size(calcBlockSize().dp)) {
                         Image(
@@ -272,7 +308,7 @@ fun Game(modifier: Modifier = Modifier) {
                     object: DragAndDropTarget {
                         override fun onDrop(event: DragAndDropEvent): Boolean {
                             val text: String = event.toAndroidDragEvent().clipData?.getItemAt(0)?.text as String
-                            if (codebar.size<8) {
+                            if (codebar.size<9) {
                                 codebar.add(text)
                             }
                             return true
@@ -281,7 +317,7 @@ fun Game(modifier: Modifier = Modifier) {
                 }
             )
     ) {
-        for (i in 0..7) {
+        for (i in 0..8) {
             var blockId: Int = R.drawable.stone
             if (i < codebar.size) {
                 when (codebar[i]) {
@@ -418,7 +454,7 @@ fun calcBlockSize(): Int {
 @Composable
 fun Preview() {
     CodeCraftJrTheme {
-        Game()
+        Game(levelChoice = "caveLevel")
     }
 }
 }
