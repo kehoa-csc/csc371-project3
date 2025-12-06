@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -289,6 +290,7 @@ fun Game(modifier: Modifier = Modifier) {
             )
         }
     }
+    //draggable blocks
     Column(horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize().padding(64.dp)) {
@@ -313,6 +315,35 @@ fun Game(modifier: Modifier = Modifier) {
                     }
             )
         }
+    }
+    //ui buttons
+    Column(horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize().padding(64.dp)) {
+            TextButton(content = {
+                Image(
+                    painter = painterResource(id = R.drawable.go),
+                    contentDescription = "go button",
+                    modifier = Modifier
+                        .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
+                )
+            }, onClick = {})
+            TextButton(content = {
+                Image(
+                    painter = painterResource(id = R.drawable.exit),
+                    contentDescription = "exit button",
+                    modifier = Modifier
+                        .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
+                )
+            }, onClick = {setContent { KidMenu("test") }})
+        TextButton(content = {
+            Image(
+                painter = painterResource(id = R.drawable.clear),
+                contentDescription = "clear button",
+                modifier = Modifier
+                    .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
+            )
+        }, onClick = {codebar.clear()})
     }
 }
 
