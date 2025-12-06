@@ -277,6 +277,9 @@ fun Game(modifier: Modifier = Modifier) {
             if (i < codebar.size) {
                 when (codebar[i]) {
                     "right_arrow" -> blockId = R.drawable.right
+                    "left_arrow" -> blockId = R.drawable.left
+                    "up_arrow" -> blockId = R.drawable.up
+                    "down_arrow" -> blockId = R.drawable.down
                 }
             }
             Image(
@@ -289,25 +292,31 @@ fun Game(modifier: Modifier = Modifier) {
     Column(horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize().padding(64.dp)) {
-        Image(
-            painter = painterResource(id = R.drawable.right),
-            contentDescription = "right block",
-            modifier = Modifier
-                .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
-                .dragAndDropSource{
-                    detectTapGestures(
-                        onLongPress = { offset ->
-                            startTransfer(
-                                transferData = DragAndDropTransferData(
-                                    clipData = ClipData.newPlainText("codeblock", "right_arrow")
+        val draggableBlockImages = listOf(R.drawable.right,R.drawable.left,R.drawable.up,R.drawable.down)
+        val draggableBlockMessages = listOf<String>("right_arrow","left_arrow","up_arrow","down_arrow")
+        for(i in (0..3)) {
+            Image(
+                painter = painterResource(id = draggableBlockImages[i]),
+                contentDescription = draggableBlockMessages[i],
+                modifier = Modifier
+                    .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
+                    .dragAndDropSource {
+                        detectTapGestures(
+                            onLongPress = { offset ->
+                                startTransfer(
+                                    transferData = DragAndDropTransferData(
+                                        clipData = ClipData.newPlainText("codeblock", draggableBlockMessages[i])
+                                    )
                                 )
-                            )
-                        }
-                    )
-                }
-        )
+                            }
+                        )
+                    }
+            )
+        }
     }
 }
+
+
 
 @Composable
 fun calcBlockSize(): Int {
@@ -324,7 +333,7 @@ fun calcBlockSize(): Int {
 fun Preview() {
     CodeCraftJrTheme {
         //KidMenu("test")
-        AdultPortal()
+        Game()
     }
 }
 }
