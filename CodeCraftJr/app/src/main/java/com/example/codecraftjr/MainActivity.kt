@@ -100,9 +100,9 @@ fun MainMenu() {
 
 @Composable
 fun AdultLoginRegister() {
-    //Background
     var firstname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
         painter = painterResource(R.drawable.background),
@@ -126,13 +126,13 @@ fun AdultLoginRegister() {
         Row(modifier = Modifier.padding(0.dp)) {
             Button(content = {Text("Register", fontSize = 24.sp)},modifier = Modifier.padding(20.dp,24.dp),
                 onClick = {
-
+                    //save login and show popup
                 })
             Button(content = {Text("  Log in  ", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
                 onClick = {
                     setContent{
                         CodeCraftJrTheme {
-
+                            AdultPortal()
                         }
                     }
                 })
@@ -142,7 +142,23 @@ fun AdultLoginRegister() {
 
 @Composable
 fun AdultPortal() {
-
+    //Background
+    Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
+    Image(
+        painter = painterResource(R.drawable.background),
+        contentDescription = "background",
+        modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
+    )
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,24.dp)) {
+    Button(content = {Text("Sign Out", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
+        onClick = {
+            setContent{
+                CodeCraftJrTheme {
+                    MainMenu()
+                }
+            }
+        })
+        }
 }
 
 @Composable
@@ -308,7 +324,7 @@ fun calcBlockSize(): Int {
 fun Preview() {
     CodeCraftJrTheme {
         //KidMenu("test")
-        AdultLoginRegister()
+        AdultPortal()
     }
 }
 }
