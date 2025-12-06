@@ -21,7 +21,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -46,6 +50,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.codecraftjr.ui.theme.CodeCraftJrTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,7 +62,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CodeCraftJrTheme {
-                Game()
+                MainMenu()
             }
         }
     }
@@ -208,7 +213,7 @@ fun KidMenu(name: String) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Game(modifier: Modifier = Modifier) {
     val codebar = remember { mutableStateListOf<String>() }
@@ -321,6 +326,7 @@ fun Game(modifier: Modifier = Modifier) {
     }
     //ui buttons
     val coroutineScope = rememberCoroutineScope()
+    val win = remember { mutableStateOf(false) }
     Column(horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize().padding(64.dp)) {
@@ -365,7 +371,7 @@ fun Game(modifier: Modifier = Modifier) {
                             }
                         }
                         if (stevePos[0]==7) {
-
+                            win.value = true
                             break
                         }
                     }
@@ -389,6 +395,11 @@ fun Game(modifier: Modifier = Modifier) {
             )
         }, onClick = {codebar.clear()})
     }
+    if (win.value) {
+        Dialog(content = {
+            Card() { Text("Great work!\n\nPress anywhere to continue",modifier=Modifier.padding(24.dp,24.dp), fontSize = 28.sp)}
+        },onDismissRequest = {win.value = false})
+    }
 }
 
 
@@ -407,7 +418,6 @@ fun calcBlockSize(): Int {
 @Composable
 fun Preview() {
     CodeCraftJrTheme {
-        //KidMenu("test")
         Game()
     }
 }
