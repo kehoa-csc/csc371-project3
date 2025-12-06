@@ -4,50 +4,51 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.codecraftjr.ui.theme.CodeCraftJrTheme
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.DragAndDropTransferData
 import androidx.compose.ui.draganddrop.mimeTypes
 import androidx.compose.ui.draganddrop.toAndroidDragEvent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.codecraftjr.ui.theme.CodeCraftJrTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CodeCraftJrTheme {
-                MainMenu()
+                Game()
             }
         }
     }
@@ -219,7 +220,8 @@ fun Game(modifier: Modifier = Modifier) {
         mutableStateListOf(0,0,0,0,0,0,0,0),
         mutableStateListOf(0,0,0,0,0,0,0,0),
     )}
-    val stevePos = remember {mutableStateListOf(0,1)} //(x,y).must compute this later with randgen levels
+    val steveStart = remember {listOf(0,1)} //(x,y).must compute this later with randgen levels
+    val stevePos = remember {mutableStateListOf(steveStart[0],steveStart[1])}
     //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
@@ -252,6 +254,7 @@ fun Game(modifier: Modifier = Modifier) {
                     }
                 }
             }
+
         }
     }
     //Bottom code bar
@@ -317,6 +320,7 @@ fun Game(modifier: Modifier = Modifier) {
         }
     }
     //ui buttons
+    val coroutineScope = rememberCoroutineScope()
     Column(horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize().padding(64.dp)) {
@@ -327,7 +331,47 @@ fun Game(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
                 )
-            }, onClick = {})
+            }, onClick = { //steve movement
+                stevePos[0]=steveStart[0]; stevePos[1]=steveStart[1]
+                coroutineScope.launch {
+                    for (i in 0..<codebar.size) {
+                        if (codebar[i] == "right_arrow") {
+                            while(stevePos[0]<7) {
+                                if (level[stevePos[1]][stevePos[0]+1]==1) {
+                                    delay(300)
+                                    stevePos[0]+=1
+                                } else {break}
+                            }
+                        } else if (codebar[i] == "left_arrow") {
+                            while(stevePos[0]>0) {
+                                if (level[stevePos[1]][stevePos[0]-1]==1) {
+                                    delay(300)
+                                    stevePos[0]-=1
+                                } else {break}
+                            }
+                        } else if (codebar[i] == "up_arrow") {
+                            while(stevePos[1]>0) {
+                                if (level[stevePos[1]-1][stevePos[0]]==1) {
+                                    delay(300)
+                                    stevePos[1]-=1
+                                } else {break}
+                            }
+                        } else if (codebar[i] == "down_arrow") {
+                            while(stevePos[1]<5) {
+                                if (level[stevePos[1]+1][stevePos[0]]==1) {
+                                    delay(300)
+                                    stevePos[1]+=1
+                                } else {break}
+                            }
+                        }
+                        if (stevePos[0]==7) {
+
+                            break
+                        }
+                    }
+                }
+
+            })
             TextButton(content = {
                 Image(
                     painter = painterResource(id = R.drawable.exit),
