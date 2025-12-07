@@ -6,7 +6,7 @@ import kotlin.random.Random
 
 class LevelGenerator {
 
-    fun generateLevel(): SnapshotStateList<SnapshotStateList<Int>> {
+    fun generateLevel(hard_mode: Boolean = false): SnapshotStateList<SnapshotStateList<Int>> {
         val level = mutableStateListOf(
             mutableStateListOf(0,0,0,0,0,0,0,0),
             mutableStateListOf(0,0,0,0,0,0,0,0),
@@ -16,7 +16,7 @@ class LevelGenerator {
             mutableStateListOf(0,0,0,0,0,0,0,0),
         )
 
-        var success: Boolean = false
+        var success = false
         while(!success) {
             val height = level.size
             val width = level[0].size
@@ -63,17 +63,7 @@ class LevelGenerator {
             //ToDo: if hardmode=false set success to true and break
 
             //pathfinding
-
-            /*level = mutableStateListOf(
-                mutableStateListOf(0,0,0,0,0,0,0,0),
-                mutableStateListOf(1,1,1,1,1,1,1,1),
-                mutableStateListOf(0,0,0,0,0,0,0,0),
-                mutableStateListOf(0,0,0,0,0,0,0,0),
-                mutableStateListOf(0,0,0,0,0,0,0,0),
-                mutableStateListOf(0,0,0,0,0,0,0,0),
-            )*/
-
-            x=1
+            x=0
             y=entry
 
             level[entry][0] = 2
@@ -90,7 +80,7 @@ class LevelGenerator {
                 if (!hit_wall) {
                     if (to_move == "up") {
                         if (y>0) {
-                            if (y==0 || level[y-1][x]==0) {
+                            if (level[y-1][x]==0) {
                                 hit_wall=true
                             } else {
                                 y-=1
@@ -112,7 +102,7 @@ class LevelGenerator {
                         }
                     } else if (to_move == "left") {
                         if (x>1) {
-                            if (x==1 || level[y][x-1]==0) {
+                            if (level[y][x-1]==0) {
                                 hit_wall = true
                             } else {
                                 x-=1
@@ -138,7 +128,7 @@ class LevelGenerator {
                         } else if (x>width-1) {
                             to_move="left"
                         } else if (level[y][x+1]==1 && level[y][x-1]==1) {
-                            to_move=listOf("left","right")[Random.nextInt(1)]
+                            to_move=listOf("left","right")[Random.nextInt(2)]
                         } else if (level[y][x+1]==1){
                             to_move="right"
                         } else if (level[y][x-1]==1) {
@@ -150,7 +140,7 @@ class LevelGenerator {
                         } else if (y==height-1) {
                             to_move="up"
                         } else if (level[y-1][x]==1 && level[y+1][x]==1) {
-                            to_move=listOf("up","down")[Random.nextInt(1)]
+                            to_move=listOf("up","down")[Random.nextInt(2)]
                         } else if (level[y+1][x]==1){
                             to_move="down"
                         } else if (level[y-1][x]==1) {
