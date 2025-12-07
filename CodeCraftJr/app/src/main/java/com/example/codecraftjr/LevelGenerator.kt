@@ -60,7 +60,10 @@ class LevelGenerator {
                 last_move = to_move
             }
 
-            //ToDo: if hardmode=false set success to true and break
+            if (hard_mode) {
+                success=true
+                continue
+            }
 
             //pathfinding
             x=0
