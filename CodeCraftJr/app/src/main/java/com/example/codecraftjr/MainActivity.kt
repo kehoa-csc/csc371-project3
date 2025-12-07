@@ -224,11 +224,20 @@ fun KidMenu(name: String) {
             onClick = {
                 setContent { Game(levelTheme="caveLevel",level=caveLevel) }
             })
-        Button(content = {Text("Random level!", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
-            onClick = {
-                val lg = LevelGenerator()
-                setContent { Game(levelTheme="random",level=lg.generateLevel()) }
-            })
+        Text("Random Level", fontSize = 24.sp)
+        Row(modifier = Modifier.padding(0.dp)) {
+            Button(content = {Text("Normal", fontSize = 28.sp)},modifier = Modifier.padding(16.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/6),
+                onClick = {
+                    val lg = LevelGenerator()
+                    setContent { Game(levelTheme="overLevel",level=lg.generateLevel()) }
+                })
+            Button(content = {Text("Hard", fontSize = 28.sp)},modifier = Modifier.padding(16.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/6),
+                onClick = {
+                    val lg = LevelGenerator()
+                    setContent { Game(levelTheme="caveLevel",level=lg.generateLevel(hard_mode=true)) }
+                })
+        }
+
     }
 }
 
@@ -452,7 +461,8 @@ fun calcBlockSize(): Int {
 @Composable
 fun Preview() {
     CodeCraftJrTheme {
-        Game(levelTheme = "caveLevel", level = caveLevel)
+        //Game(levelTheme = "caveLevel", level = caveLevel)
+        KidMenu("es")
     }
 }
 }
