@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,7 +38,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,7 +54,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.codecraftjr.ui.theme.CodeCraftJrTheme
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -280,6 +277,7 @@ fun KidMenu(name: String) {
 @Composable
 fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateList<SnapshotStateList<Int>>,user:String="user") {
     val mp = MediaPlayer.create(this,R.raw.click)
+    val dropmp = MediaPlayer.create(this,R.raw.place_block)
     val codebar = remember { mutableStateListOf<String>() }
 
     //Steve positioning
@@ -350,6 +348,7 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
                 target = remember {
                     object: DragAndDropTarget {
                         override fun onDrop(event: DragAndDropEvent): Boolean {
+                            dropmp.start()
                             val text: String = event.toAndroidDragEvent().clipData?.getItemAt(0)?.text as String
                             if (codebar.size<9) {
                                 codebar.add(text)
