@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-var plays = mutableStateMapOf("Andrew" to 0, "Jason" to 0, "Charlotte" to 0)
+var plays = mutableStateMapOf("Andrew" to 0, "Jackson" to 0, "Charlotte" to 0)
 
 @Composable
 fun MainMenu() {
