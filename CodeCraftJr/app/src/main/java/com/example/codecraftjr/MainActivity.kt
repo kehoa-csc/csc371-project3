@@ -280,6 +280,7 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
     val dropmp = MediaPlayer.create(this,R.raw.place_block)
     val winmp = MediaPlayer.create(this,R.raw.win)
     val codebar = remember { mutableStateListOf<String>() }
+    val hasSetPlays = remember { mutableStateOf(false) }
 
     //Steve positioning
     val steveStart = remember {mutableListOf(0,0)} //(x,y)
@@ -476,12 +477,16 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
         }, onClick = {mp.start(); codebar.clear()})
     }
     if (win.value) {
-        //val previousPlays: Int? = plays[user]
-        plays.set(user,1)
-        winmp.start()
+        if (!hasSetPlays.value) {
+            val previousPlays = plays[user]
+            val newPlays = previousPlays?.plus(1)
+            plays.set(user, newPlays as Int)
+            winmp.start()
+            hasSetPlays.value=true
+        }
         Dialog(content = {
             Card() { Text("Great work!\n\nPress anywhere to continue",modifier=Modifier.padding(24.dp,24.dp), fontSize = 28.sp)}
-        },onDismissRequest = {win.value = false})
+        },onDismissRequest = {win.value = false; hasSetPlays.value = false})
     }
 }
 
