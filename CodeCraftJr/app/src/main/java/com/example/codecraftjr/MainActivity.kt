@@ -278,6 +278,7 @@ fun KidMenu(name: String) {
 fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateList<SnapshotStateList<Int>>,user:String="user") {
     val mp = MediaPlayer.create(this,R.raw.click)
     val dropmp = MediaPlayer.create(this,R.raw.place_block)
+    val winmp = MediaPlayer.create(this,R.raw.win)
     val codebar = remember { mutableStateListOf<String>() }
 
     //Steve positioning
@@ -477,6 +478,7 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
     if (win.value) {
         //val previousPlays: Int? = plays[user]
         plays.set(user,1)
+        winmp.start()
         Dialog(content = {
             Card() { Text("Great work!\n\nPress anywhere to continue",modifier=Modifier.padding(24.dp,24.dp), fontSize = 28.sp)}
         },onDismissRequest = {win.value = false})
