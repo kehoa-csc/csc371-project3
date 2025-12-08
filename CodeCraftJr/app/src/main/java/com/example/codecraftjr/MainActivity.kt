@@ -33,6 +33,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -65,11 +66,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CodeCraftJrTheme {
-                Game(levelTheme="caveLevel",level=caveLevel)
+                //Game(levelTheme="caveLevel",level=caveLevel)
+                MainMenu()
             }
         }
     }
 
+var plays = mutableStateMapOf("Andrew" to 0, "Jason" to 0, "Charlotte" to 0)
 
 @Composable
 fun MainMenu() {
@@ -112,6 +115,7 @@ fun MainMenu() {
 fun AdultLoginRegister() {
     var firstname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var invalidLogin by remember { mutableStateOf(false) }
     //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
@@ -134,19 +138,33 @@ fun AdultLoginRegister() {
             modifier = Modifier.padding(0.dp,16.dp),
         )
         Row(modifier = Modifier.padding(0.dp)) {
-            Button(content = {Text("Register", fontSize = 24.sp)},modifier = Modifier.padding(20.dp,24.dp),
+            /*Button(content = {Text("Register", fontSize = 24.sp)},modifier = Modifier.padding(20.dp,24.dp),
                 onClick = {
                     //save login and show popup
-                })
+                })*/
             Button(content = {Text("  Log in  ", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
                 onClick = {
-                    setContent{
-                        CodeCraftJrTheme {
-                            AdultPortal()
+                    if (firstname=="sample" && password=="sample")  {
+                        setContent{
+                            CodeCraftJrTheme {
+                                AdultPortal()
+                            }
                         }
+                    } else {
+                        invalidLogin=true
                     }
                 })
         }
+    }
+    if (invalidLogin) {
+        AlertDialog(onDismissRequest = {invalidLogin=false},
+            title = { Text("Invalid Login") },
+            text = { Text("Temporary login is name: sample password: sample") },
+            confirmButton = {
+                TextButton(onClick = {invalidLogin=false}) {
+                    Text("OK")
+                }
+            })
     }
 }
 
@@ -160,7 +178,11 @@ fun AdultPortal() {
         modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
     )
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,24.dp)) {
-    Button(content = {Text("Sign Out", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
+        Text(text="Games played", fontSize = 48.sp, modifier = Modifier.padding(0.dp,24.dp))
+        for (i in 0..<plays.size) {
+            Text("${plays.keys.elementAt(i)}: ${plays.values.elementAt(i)}", fontSize = 36.sp)
+        }
+        Button(content = {Text("Sign Out", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
         onClick = {
             setContent{
                 CodeCraftJrTheme {
@@ -182,12 +204,12 @@ fun KidsProfiles() {
     )
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,32.dp)) {
         Text("Hi! Pick a profile.", fontSize = 36.sp)
-        Button(content = {Text("Andrew", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,32.dp).width(LocalConfiguration.current.screenWidthDp.dp/3),
-            onClick = {
-                setContent { KidMenu("test") }
-            })
-        //More profiles loaded from file will go here
-        //Call KidMenu with profile name in function header
+        for (i in 0..<plays.size) {
+            Button(content = {Text(plays.keys.elementAt(i), fontSize = 36.sp)},modifier = Modifier.padding(0.dp,16.dp).width(LocalConfiguration.current.screenWidthDp.dp/3),
+                onClick = {
+                    setContent { KidMenu(plays.keys.elementAt(i)) }
+                })
+        }
     }
 }
     val overLevel = mutableStateListOf(
@@ -214,27 +236,29 @@ fun KidMenu(name: String) {
         contentDescription = "background",
         modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
     )
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,32.dp)) {
+    Button(content = {Text("Sign Out", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp), onClick = {setContent { MainMenu() }})
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,32.dp)) {
         Text("Hi, ${name}! Pick a level.", fontSize = 36.sp)
         Button(content = {Text("Overworld", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-                setContent { Game(levelTheme="overLevel",level=overLevel) }
+                setContent { Game(levelTheme="overLevel",level=overLevel,user=name) }
             })
         Button(content = {Text("Caves", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-                setContent { Game(levelTheme="caveLevel",level=caveLevel) }
+                setContent { Game(levelTheme="caveLevel",level=caveLevel, user=name) }
             })
         Text("Random Level", fontSize = 24.sp)
         Row(modifier = Modifier.padding(0.dp)) {
             Button(content = {Text("Normal", fontSize = 28.sp)},modifier = Modifier.padding(16.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/6),
                 onClick = {
                     val lg = LevelGenerator()
-                    setContent { Game(levelTheme="overLevel",level=lg.generateLevel()) }
+                    setContent { Game(levelTheme="overLevel",level=lg.generateLevel(),user=name) }
                 })
             Button(content = {Text("Hard", fontSize = 28.sp)},modifier = Modifier.padding(16.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/6),
                 onClick = {
                     val lg = LevelGenerator()
-                    setContent { Game(levelTheme="caveLevel",level=lg.generateLevel(hard_mode=true)) }
+                    setContent { Game(levelTheme="caveLevel",level=lg.generateLevel(hard_mode=true), user=name) }
                 })
         }
 
@@ -243,7 +267,7 @@ fun KidMenu(name: String) {
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateList<SnapshotStateList<Int>>) {
+fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateList<SnapshotStateList<Int>>,user:String="user") {
     val codebar = remember { mutableStateListOf<String>() }
 
     //Steve positioning
@@ -428,7 +452,7 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
                     modifier = Modifier
                         .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
                 )
-            }, onClick = {setContent { KidMenu("test") }})
+            }, onClick = {setContent { KidMenu(name=user) }})
         TextButton(content = {
             Image(
                 painter = painterResource(id = R.drawable.clear),
@@ -439,6 +463,8 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
         }, onClick = {codebar.clear()})
     }
     if (win.value) {
+        //val previousPlays: Int? = plays[user]
+        plays.set(user,1)
         Dialog(content = {
             Card() { Text("Great work!\n\nPress anywhere to continue",modifier=Modifier.padding(24.dp,24.dp), fontSize = 28.sp)}
         },onDismissRequest = {win.value = false})
@@ -462,7 +488,8 @@ fun calcBlockSize(): Int {
 fun Preview() {
     CodeCraftJrTheme {
         //Game(levelTheme = "caveLevel", level = caveLevel)
-        KidMenu("es")
+        KidMenu("test")
+        //KidsProfiles()
     }
 }
 }
