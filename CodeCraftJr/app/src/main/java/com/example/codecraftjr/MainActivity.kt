@@ -3,6 +3,7 @@ package com.example.codecraftjr
 import android.content.ClipData
 import android.content.ClipDescription
 import android.content.pm.ActivityInfo
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -76,6 +77,7 @@ var plays = mutableStateMapOf("Andrew" to 0, "Jason" to 0, "Charlotte" to 0)
 
 @Composable
 fun MainMenu() {
+    val mp = MediaPlayer.create(this,R.raw.click)
     //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
@@ -98,6 +100,7 @@ fun MainMenu() {
                             AdultLoginRegister()
                         }
                     }
+                    mp.start()
                 })
             Button(content = {Text("  Kids  ", fontSize = 36.sp)}, modifier = Modifier.padding(20.dp,0.dp),
                 onClick = {
@@ -106,6 +109,7 @@ fun MainMenu() {
                             KidsProfiles()
                         }
                     }
+                    mp.start()
                 })
         }
     }
@@ -113,6 +117,7 @@ fun MainMenu() {
 
 @Composable
 fun AdultLoginRegister() {
+    val mp = MediaPlayer.create(this,R.raw.click)
     var firstname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var invalidLogin by remember { mutableStateOf(false) }
@@ -144,6 +149,7 @@ fun AdultLoginRegister() {
                 })*/
             Button(content = {Text("  Log in  ", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
                 onClick = {
+                    mp.start()
                     if (firstname=="sample" && password=="sample")  {
                         setContent{
                             CodeCraftJrTheme {
@@ -170,6 +176,7 @@ fun AdultLoginRegister() {
 
 @Composable
 fun AdultPortal() {
+    val mp = MediaPlayer.create(this,R.raw.click)
     //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
@@ -184,6 +191,7 @@ fun AdultPortal() {
         }
         Button(content = {Text("Sign Out", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp),
         onClick = {
+            mp.start()
             setContent{
                 CodeCraftJrTheme {
                     MainMenu()
@@ -195,6 +203,7 @@ fun AdultPortal() {
 
 @Composable
 fun KidsProfiles() {
+    val mp = MediaPlayer.create(this,R.raw.click)
     //Background
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
@@ -207,6 +216,7 @@ fun KidsProfiles() {
         for (i in 0..<plays.size) {
             Button(content = {Text(plays.keys.elementAt(i), fontSize = 36.sp)},modifier = Modifier.padding(0.dp,16.dp).width(LocalConfiguration.current.screenWidthDp.dp/3),
                 onClick = {
+                    mp.start()
                     setContent { KidMenu(plays.keys.elementAt(i)) }
                 })
         }
@@ -230,35 +240,36 @@ fun KidsProfiles() {
     )
 @Composable
 fun KidMenu(name: String) {
+    val mp = MediaPlayer.create(this,R.raw.click)
     Scaffold(containerColor = Color.hsl(216F, .84F,.902F)) { }
     Image(
         painter = painterResource(R.drawable.background),
         contentDescription = "background",
         modifier = Modifier.size(LocalConfiguration.current.screenWidthDp.dp)
     )
-    Button(content = {Text("Sign Out", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp), onClick = {setContent { MainMenu() }})
+    Button(content = {Text("Sign Out", fontSize = 24.sp)}, modifier = Modifier.padding(20.dp,24.dp), onClick = {mp.start(); setContent { MainMenu() }})
 
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize().padding(0.dp,32.dp)) {
         Text("Hi, ${name}! Pick a level.", fontSize = 36.sp)
         Button(content = {Text("Overworld", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-                setContent { Game(levelTheme="overLevel",level=overLevel,user=name) }
+                mp.start(); setContent { Game(levelTheme="overLevel",level=overLevel,user=name) }
             })
         Button(content = {Text("Caves", fontSize = 36.sp)},modifier = Modifier.padding(0.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/3),
             onClick = {
-                setContent { Game(levelTheme="caveLevel",level=caveLevel, user=name) }
+                mp.start(); setContent { Game(levelTheme="caveLevel",level=caveLevel, user=name) }
             })
         Text("Random Level", fontSize = 24.sp)
         Row(modifier = Modifier.padding(0.dp)) {
             Button(content = {Text("Normal", fontSize = 28.sp)},modifier = Modifier.padding(16.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/6),
                 onClick = {
                     val lg = LevelGenerator()
-                    setContent { Game(levelTheme="overLevel",level=lg.generateLevel(),user=name) }
+                    mp.start(); setContent { Game(levelTheme="overLevel",level=lg.generateLevel(),user=name) }
                 })
             Button(content = {Text("Hard", fontSize = 28.sp)},modifier = Modifier.padding(16.dp,LocalConfiguration.current.screenWidthDp.dp/50).width(LocalConfiguration.current.screenWidthDp.dp/6),
                 onClick = {
                     val lg = LevelGenerator()
-                    setContent { Game(levelTheme="caveLevel",level=lg.generateLevel(hard_mode=true), user=name) }
+                    mp.start(); setContent { Game(levelTheme="caveLevel",level=lg.generateLevel(hard_mode=true), user=name) }
                 })
         }
 
@@ -268,6 +279,7 @@ fun KidMenu(name: String) {
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateList<SnapshotStateList<Int>>,user:String="user") {
+    val mp = MediaPlayer.create(this,R.raw.click)
     val codebar = remember { mutableStateListOf<String>() }
 
     //Steve positioning
@@ -405,6 +417,7 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
                         .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
                 )
             }, onClick = { //steve movement
+                mp.start()
                 stevePos[0]=steveStart[0]; stevePos[1]=steveStart[1]
                 coroutineScope.launch {
                     for (i in 0..<codebar.size) {
@@ -452,7 +465,7 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
                     modifier = Modifier
                         .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
                 )
-            }, onClick = {setContent { KidMenu(name=user) }})
+            }, onClick = {mp.start(); setContent { KidMenu(name=user) }})
         TextButton(content = {
             Image(
                 painter = painterResource(id = R.drawable.clear),
@@ -460,7 +473,7 @@ fun Game(modifier: Modifier = Modifier,levelTheme: String, level:SnapshotStateLi
                 modifier = Modifier
                     .size(calcBlockSize().dp).border(0.5.dp, color = Color.Black)
             )
-        }, onClick = {codebar.clear()})
+        }, onClick = {mp.start(); codebar.clear()})
     }
     if (win.value) {
         //val previousPlays: Int? = plays[user]
